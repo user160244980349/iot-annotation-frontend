@@ -1,10 +1,17 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
     mode: 'production',
     entry: {
         index: path.resolve(__dirname, 'js/index.js'),
     },
+    plugins: [
+        new webpack.ProvidePlugin({
+          $: "jquery",
+          jQuery: "jquery",
+        })
+    ],
     module: {
         rules: [
             {
@@ -21,6 +28,6 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, '../php-engine/public/js'),
+        path: path.resolve(__dirname, '../iot-annotation/public/js'),
     },
 };

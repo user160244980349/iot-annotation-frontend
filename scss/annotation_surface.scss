@@ -1,0 +1,34 @@
+
+#annotation_surface {
+
+    text-align: justify; 
+    line-height: 30px;
+    white-space: pre-line; 
+    font-size: larger; 
+    font-family: $font-family-sans-serif;
+    
+}
+
+.sticky-sidebar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: calc(54px + 2rem);
+    max-height: calc(100vh - 54px - 4rem);
+}
+
+.overflow  {
+    overflow-y: auto;
+}
+
+.page-root {
+    margin-top: calc(54px + 2rem);
+    margin-bottom: 2rem;
+}
+
+.divider-el {
+    background-color: $gray-400;
+    padding-top: 1px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    width: 100%;
+}
