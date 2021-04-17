@@ -1,54 +1,28 @@
 import AnnotationSurface from './annotation/annotation_surface';
 import LayersContainer from './layers_container';
 import LayersManagement from './layers_management';
-import metaLayers from '../config';
+import META_LAYERS from '../config';
+import RenderMode from './render_mode';
 
 
 function main () {
 
-    const as = new AnnotationSurface(metaLayers);
-    const lm = new LayersManagement();
-    const lc = new LayersContainer();
+    let as = new AnnotationSurface(META_LAYERS);
+    let lm = new LayersManagement();
+    let lc = new LayersContainer();
 
-    as.mouseEnter = (e) => {lm.render(e);}
+    as.getLayer = (id) => {return lc.getLayer(id);}
     as.pushToContainer = (e) => {lc.push(e);}
     as.removeFromContainer = (id) => {lc.remove(id);}
-    as.offerNewLayer = (l) => {console.log("offer new layer");}
-    as.getLayer = (id) => {return lc.getLayer(id);}
+    
+    as.mouseClick = (ls, state) => {lm.render(RenderMode.ELEMENT, state, ls);}
+    as.mouseEnter = (ls, state) => {lm.render(RenderMode.ELEMENT, state, ls);}
+    as.suggestNewLayer = (ls, state) => {lm.render(RenderMode.SUGGESTIONS, state, ls);}
+
     lm.getLayer = (id) => {return lc.getLayer(id);}
+    lm.applyLayer = (l) => {as.applyLayer(l);}
+    lm.removeLayer = (l) => {as.removeLayer(l);}
 
-    document.onselectionchange = () => {
-        as.readSelection();
-    };
-
-    document.onkeypress = (event) => {
-
-        if (event.key == "q") {
-            as.addLayer("s1");
-        }
-        if (event.key == "w") {
-            as.addLayer("s2");
-        }
-        if (event.key == "e") {
-            as.addLayer("s3");
-        }
-        if (event.key == "r") {
-            as.addLayer("s4");
-        }
-        if (event.key == "a") {
-            as.addLayer("s5");
-        }
-        if (event.key == "s") {
-            as.addLayer("s6");
-        }
-        if (event.key == "d") {
-            as.addLayer("s7");
-        }
-        if (event.key == "f") {
-            as.addLayer("s8");
-        }
-        
-    };
 }
 
 document.addEventListener('DOMContentLoaded', main);

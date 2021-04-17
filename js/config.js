@@ -1,4 +1,4 @@
-export default [
+const META_LAYERS = [
     {
         name: "First-party collection (example)",
         label: "s1",
@@ -24,27 +24,29 @@ export default [
         superlayer: "s3",
     },
     {
-        name: "s5",
+        name: "s5 (example)",
         label: "s5",
         classes: ["s", "s-5"],
         superlayer: null,
     },
     {
-        name: "s6",
+        name: "s6 (example)",
         label: "s6",
         classes: ["s", "s-6"],
         superlayer: null,
     },
     {
-        name: "s7",
+        name: "s7 (example)",
         label: "s7",
         classes: ["s", "s-7"],
         superlayer: null,
     },
     {
-        name: "s8",
+        name: "s8 (example)",
         label: "s8",
         classes: ["s", "s-8"],
         superlayer: null,
     },
 ]
+
+export default META_LAYERS;

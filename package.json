@@ -3,18 +3,21 @@
     "description": "annotation frontend application",
     "version": "0.0.1",
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.3.1",
         "bootstrap": "4.5.3",
         "jquery": "3.6.0",
         "popper.js": "1.16.1"
     },
     "devDependencies": {
-        "webpack": "5.6.0",
-        "webpack-cli": "4.2.0",
-        "sass": "1.26.11",
-        "style-loader": "2.0.0",
         "css-loader": "5.0.1",
+        "file-loader": "6.2.0",
+        "postcss-loader": "4.1.0",
+        "sass": "1.26.11",
         "sass-loader": "10.0.2",
-        "postcss-loader": "4.1.0"
+        "style-loader": "2.0.0",
+        "url-loader": "4.1.1",
+        "webpack": "5.6.0",
+        "webpack-cli": "4.2.0"
     },
     "scripts": {
         "dev": "webpack --mode development",

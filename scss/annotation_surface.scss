@@ -6,7 +6,7 @@
     white-space: pre-line; 
     font-size: larger; 
     font-family: $font-family-sans-serif;
-    
+
 }
 
 .sticky-sidebar {
@@ -25,10 +25,29 @@
     margin-bottom: 2rem;
 }
 
-.divider-el {
+.divider {
     background-color: $gray-400;
     padding-top: 1px;
     margin-top: 2px;
     margin-bottom: 2px;
     width: 100%;
+}
+
+.list-group-item {
+    &:hover {
+        background-color: $gray-700;
+        color: $gray-400;
+    }
+
+    &-action {
+        color: $gray-400;
+
+        .list-group-item-heading {
+            color: $gray-400;
+        }
+    }
+
+    &:hover .list-group-item-heading {
+        color: $gray-400;
+    }
 }

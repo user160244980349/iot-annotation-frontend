@@ -23,8 +23,19 @@ module.exports = {
                 }, {
                     loader: 'sass-loader' // compiles Sass to CSS
                 }]
+            },
+            {
+                test: /\.(woff|woff2|ttf|svg|eot)/,
+                use: [{ 
+                    loader: 'url-loader',
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: '../fonts/',  
+                        publicPath: '../static/fonts'
+                    }
+                }]
             }
-        ]
+        ],
     },
     output: {
         filename: '[name].js',
