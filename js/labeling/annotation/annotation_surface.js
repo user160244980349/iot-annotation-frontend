@@ -25,12 +25,12 @@ export default class AnnotationSurface {
             if (this.state == State.UNSELECT) {
                 this.state = State.HOVERING;
 
+                this.contextElement = null;
                 if (e.target.id != this.id 
                     && this.isAnnotationElement(e.target)) {
                     this.contextElement = e.target;
-                } else {
-                    this.contextElement = null;
                 }
+                
                 this.mouseEnter(this.contextLayers, this.state);
                 return;
             }
@@ -56,10 +56,9 @@ export default class AnnotationSurface {
                 return;
             }
 
+            this.contextElement = null;
             if (e.target.id != this.id) {
                 this.contextElement = e.target;
-            } else {
-                this.contextElement = null;
             }
 
             this.mouseEnter(this.contextLayers);
@@ -80,16 +79,6 @@ export default class AnnotationSurface {
         }, 10));
     }
 
-    get contextLayers() {
-        let layers = null;
-        if (this.contextElement != null) {
-            if (this.contextElement.nodeType != 3) {
-                layers = this.contextElement.getAttribute("data-layers").split(",");
-            }
-        }
-        return layers;
-    }
-
     getLayer (id) {
         throw "Not implemented!";
     }
@@ -102,19 +91,15 @@ export default class AnnotationSurface {
         throw "Not implemented!";
     }
 
+    suggestNewLayer (ls, state) {
+        throw "Not implemented!";
+    }
+
     pushToContainer (l) {
         throw "Not implemented!";
     }
 
     removeFromContainer (l) {
-        throw "Not implemented!";
-    }
-
-    suggestNewLayer (state) {
-        throw "Not implemented!";
-    }
-
-    cancelSuggestion () {
         throw "Not implemented!";
     }
 
@@ -126,22 +111,77 @@ export default class AnnotationSurface {
         return layers;
     }
 
-    // Remove layer stuff
-
-    removeLayer (l) {
-        this.removeFromContainer(l);
-        let parts = this.findLayerParts(l);
-        parts = this.updateLayerCells(parts, l);
-        this.mergeSame(parts);
-        this.state = State.HOVERING;
+    get contextLayers() {
+        let layers = null;
+        if (this.contextElement != null) {
+            if (this.contextElement.nodeType != 3) {
+                layers = this.contextElement.getAttribute("data-layers").split(",");
+            }
+        }
+        return layers;
     }
 
-    updateLayerCells (parts, l) {
+    // Remove layer stuff
+
+    getHierarchy (els, l) {
+        let layers = [];
+        for (let el of els) {
+            layers.push(...this.toRemove(el, l));
+        }
+        return [... new Set(layers)];
+    }
+
+    toRemove (el, l) {
+
+        let toRemove = [];
+
+        if (el.nodeType == 3) {
+            return toRemove;
+        }
+
+        let layers = el.getAttribute("data-layers").split(",");
+
+        let level = [l.toString()];
+        while (level.length != 0) {
+
+            let nextLevel = [];
+            while (level.length != 0) {
+
+                let id = level.shift();
+                let seq = layers.slice(layers.indexOf(id));
+                let item = this.getLayer(id).metaLayer;
+                toRemove.push(id);
+
+                for (let tid of seq) {
+                    let t = this.getLayer(tid).metaLayer;
+                    if (item.label == t.superlayer) {
+                        nextLevel.push(tid);
+                    }
+                }
+            }
+
+            level = nextLevel;
+        }
+
+        return toRemove;
+    }
+
+    removeLayer (l) {
+        let parts = this.findLayerParts(l);
+        let layers = this.getHierarchy([...parts.pre, this.contextElement, ...parts.suf] , l);
+        parts = this.updateLayerCells(parts, layers);
+        this.mergeSame(parts);
+        this.removeFromContainer(l);
+        this.state = State.HOVERING;
+        this.mouseEnter(this.contextLayers, this.state);
+    }
+
+    updateLayerCells (parts, ls) {
 
         let pre = parts.pre;
         let suf = parts.suf;
 
-        this.contextElement = this.removeLayerFromCell(this.contextElement, l);
+        this.contextElement = this.removeLayerFromCell(this.contextElement, ls);
 
         // REPLACEMENT
         let pre2 = [];
@@ -149,7 +189,7 @@ export default class AnnotationSurface {
 
         while (pre.length > 0) {
             let p = pre.pop();
-            let e = this.removeLayerFromCell(p, l);
+            let e = this.removeLayerFromCell(p, ls);
             if (e == null) {
                 pre2.unshift(p);
             } else {
@@ -160,7 +200,7 @@ export default class AnnotationSurface {
 
         while (suf.length > 0) {
             let s = suf.shift();
-            let e = this.removeLayerFromCell(s, l);
+            let e = this.removeLayerFromCell(s, ls);
             if (e == null) {
                 suf2.push(s);
             } else {
@@ -230,10 +270,7 @@ export default class AnnotationSurface {
         return true;
     }
 
-    removeLayerFromCell (el, l) {
-
-        let last;
-        let lStr = l.toString();
+    removeLayerFromCell (el, ls) {
 
         if (el.nodeType == 3) {
             return null;
@@ -241,12 +278,11 @@ export default class AnnotationSurface {
 
         let layers = el.getAttribute("data-layers").split(",");
 
-        if (!layers.includes(lStr)) {
-            return null;
+        for (let l of ls) {
+            tools.remove(layers, l.toString());
         }
 
-        tools.remove(layers, lStr);
-
+        let last;
         if (layers.length == 0) {
             last = tools.unwrap(el);
         } else {
@@ -372,30 +408,50 @@ export default class AnnotationSurface {
     // Selection processing
 
     get appliableLayers () {
-        return Object.values(this.layers);
+
+        let layers = Object.values(this.layers);
+        for (let l of Object.values(this.layers)) {
+
+            for (let c of this.selection.m.childNodes) {
+
+                let applied = [];
+                if (c.nodeType == 3) { // TEXT_NODE
+                    if (this.selection.p != null && this.selection.p.id != this.id) {
+                        applied.push(...this.selection.p.getAttribute("data-layers").split(","));
+                    }
+                } else {
+                    applied.push(...c.getAttribute("data-layers").split(","));
+                }
+
+                if (!this.validateHierarchy(applied, l)) {
+                    tools.remove(layers, l)
+                    break;
+                }
+            }
+        }
+
+        return layers;
     }
 
     validateHierarchy (appliedLayers, newlayer) {
 
-        let labels = [];
-        for (let i = 0; i < appliedLayers.length; i++) {
-            labels.push(this.getLayer(layers[i]).label);
+        let ls = [];
+        for (let l of appliedLayers) {
+            ls.push(this.getLayer(l));
         }
 
-        let leaf = this.getLayer(newlayer).label
-
-        for (let i = labels.length - 1; i >= 0; i--) {
-            if (leaf == labels[i]) {
+        for (let l of ls.reverse()) {
+            if (newlayer.label == l.label) {
                 return false;
             }
         }
 
-        if (this.layers[leaf].superlayer == null) {
+        if (newlayer.superlayer == null) {
             return true;
         }
 
-        for (let i = labels.length - 1; i >= 0; i--) {
-            if (this.layers[leaf].superlayer == labels[i]) {
+        for (let l of ls.reverse()) {
+            if (newlayer.superlayer == l.label) {
                 return true;
             }
         }

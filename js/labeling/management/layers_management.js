@@ -1,4 +1,4 @@
-import State from "./annotation/state";
+import State from "../annotation/state";
 import RenderMode from "./render_mode";
 
 
@@ -54,21 +54,19 @@ export default class LayersManagement {
             case State.FOCUSING: this.pin(); break;
         }
 
+        if (what == null) {
+            this.renderEmpty();
+            return;
+        }
+
         switch (mode) {
             case RenderMode.EMPTY:
                 this.renderEmpty();
                 break;
-            case RenderMode.SUGGESTIONS: 
-                if (what == null) {
-                    break;
-                }
+            case RenderMode.SUGGESTIONS:
                 this.renderSuggestions(what);
                 break;
             case RenderMode.ELEMENT:
-                if (what == null) {
-                    this.renderEmpty();
-                    break;
-                }
                 this.renderElement(what);
                 break;
         }
@@ -133,11 +131,6 @@ export default class LayersManagement {
         button.onclick = () => {
             this.unpin();
             this.removeLayer(layer.id);
-            container.remove();
-            this.activeElements--;
-            if (this.activeElements == 0) {
-                this.render(RenderMode.EMPTY);
-            }
         }
 
         flex.appendChild(button);

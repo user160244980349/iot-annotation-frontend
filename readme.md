@@ -10,15 +10,15 @@ TODO
     -[x] Working layer remove
     -[x] Merge spans with same layers
     -[x] Fix upper layer deletion
--[ ] Applying of a layer
+    -[x] Hierarchical removing
+-[x] Applying of a layer
     -[x] First iteration
-    -[ ] Make suggestions based on applied layers
+    -[x] Make suggestions based on applied layers
     -[ ] (Optional) Make STRUCTURED suggestions based on applied layers
--[ ] Preview
-    -[ ] Break list of layers by base layers
+-[x] Webpack warnings
 
 GLOBAL THINGS
 =============
 -[x] Bugs with selection of not the policy content
--[ ] More sensitive rerender of layers panel
+-[x] More sensitive rerender of layers panel
 -[ ] Clean code

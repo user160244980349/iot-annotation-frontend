@@ -15,6 +15,13 @@ module.exports = {
     module: {
         rules: [
             {
+              test: /\.js$/,
+              enforce: "pre",
+              use: [{
+                    loader: "source-map-loader"
+                }]
+            },
+            {
                 test: /\.(scss)$/,
                 use: [{ 
                     loader: 'style-loader' 
