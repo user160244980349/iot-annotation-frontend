@@ -1,52 +1,46 @@
 const META_LAYERS = [
     {
-        name: "First-party collection (example)",
+        name: "Data Activity",
         label: "s1",
         classes: ["s", "s-1"],
         superlayer: null,
     },
     {
-        name: "Data subject (example)",
+        name: "Data",
         label: "s2",
         classes: ["s", "s-2"],
         superlayer: "s1",
     },
     {
-        name: "Third-party collection (example)",
+        name: "Activity Form",
         label: "s3",
         classes: ["s", "s-3"],
-        superlayer: null,
+        superlayer: "s1",
     },
     {
-        name: "Data subject (example)",
+        name: "Legal Basis",
         label: "s4",
         classes: ["s", "s-4"],
-        superlayer: "s3",
+        superlayer: "s1",
     },
     {
-        name: "s5 (example)",
+        name: "Data Activity Purpose",
         label: "s5",
         classes: ["s", "s-5"],
-        superlayer: null,
+        superlayer: "s1",
     },
     {
-        name: "s6 (example)",
+        name: "Security Mechanism",
         label: "s6",
         classes: ["s", "s-6"],
-        superlayer: null,
+        superlayer: "s1",
     },
-    {
-        name: "s7 (example)",
-        label: "s7",
-        classes: ["s", "s-7"],
-        superlayer: null,
-    },
-    {
-        name: "s8 (example)",
-        label: "s8",
-        classes: ["s", "s-8"],
-        superlayer: null,
-    },
+    // {
+    //     name: "s8 (example)",
+    //     label: "s8",
+    //     classes: ["s", "s-8"],
+    //     superlayer: null,
+    // },
 ]
 
 export default META_LAYERS;
