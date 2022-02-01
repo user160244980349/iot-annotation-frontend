@@ -12,7 +12,7 @@ function main () {
         return;
     }
 
-    const as = new AnnotationSurface( META_LAYERS);
+    const as = new AnnotationSurface(META_LAYERS);
     const lm = new LayersManagement();
     const lc = new LayersContainer();
 

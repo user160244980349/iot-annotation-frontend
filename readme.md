@@ -14,11 +14,11 @@ TODO
 - [x] Applying of a layer
     - [x] First iteration
     - [x] Make suggestions based on applied layers
-    - [ ] (Optional) Make STRUCTURED suggestions based on applied layers
+    - [x] (Optional) Make STRUCTURED suggestions based on applied layers
 - [x] Webpack warnings
-
-GLOBAL THINGS
-=============
 - [x] Bugs with selection of not the policy content
 - [x] More sensitive rerender of layers panel
+- [x] Fix empty spans
+- [ ] Review code (especially dynamics and callbacks)
 - [ ] Clean code
+- [ ] Lazy loading (webpack warnings)

@@ -4,6 +4,12 @@ export default class LayersContainer {
 
     constructor () {
         this.layers_pool = {};
+        this.btn = document.getElementById("commit");
+        this.href = "/data-download";
+
+        this.btn.addEventListener("click", (e) => {
+            this.send();
+        });
     }
 
     push(newLayer) {
@@ -18,4 +24,10 @@ export default class LayersContainer {
         return this.layers_pool[id];
     }
 
+    send () {
+        this.json = document.getElementById("json_data");
+        this.form = document.getElementById("json_form");
+        this.json.value = JSON.stringify(this.layers_pool);
+        this.form.submit();
+    }
 }
