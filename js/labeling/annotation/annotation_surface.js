@@ -364,6 +364,7 @@ export default class AnnotationSurface {
 
         this.clearDocument();
         this.pushToContainer(l);
+
         let elements = this.splitContent(this.selection.m, l.element);
 
         this.el.appendChild(this.selection.s);
@@ -372,6 +373,7 @@ export default class AnnotationSurface {
         }
         this.el.appendChild(this.selection.e);
         this.state = State.HOVERING;
+        this.mouseEnter(this.contextLayers);
     }
 
     updateShadows (el) {
@@ -478,9 +480,15 @@ export default class AnnotationSurface {
             return;
         }
 
+        let selection = window.getSelection();
+
+        if (selection.rangeCount < 1) {
+            this.selection = null;
+            return;
+        }
+
         let s = 0, e = 0, p = null;
         let start, middle, end;
-        let selection = window.getSelection();
 
         middle = selection.getRangeAt(0).cloneRange();
 
@@ -510,10 +518,25 @@ export default class AnnotationSurface {
         end.selectNodeContents(this.el);
         end.setStart(middle.endContainer, middle.endOffset);
 
+        let start_el = start.cloneContents();
+        let middle_el = middle.cloneContents();
+        let end_el = end.cloneContents();
+        
+        if (start_el.lastChild.nodeType == 1 && start_el.lastChild.innerText === '') {
+            start_el.lastChild.remove();
+        }
+        if (middle_el.firstChild.nodeType == 3 && middle_el.firstChild.length == 0) {
+            middle_el.firstChild.remove();
+        }
+        if (middle_el.lastChild.nodeType == 3 && middle_el.lastChild.length == 0) {
+            middle_el.lastChild.remove();
+        }
+        if (end_el.firstChild.nodeType == 1 && end_el.firstChild.innerText === '') {
+            end_el.firstChild.remove();
+        }
+
         this.selection = new Selection(
-            start.cloneContents(), 
-            middle.cloneContents(), 
-            end.cloneContents(),
+            start_el, middle_el, end_el,
             p, s, e
         );
 

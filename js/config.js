@@ -35,12 +35,12 @@ const META_LAYERS = [
         classes: ["s", "s-6"],
         superlayer: "s1",
     },
-    // {
-    //     name: "s8 (example)",
-    //     label: "s8",
-    //     classes: ["s", "s-8"],
-    //     superlayer: null,
-    // },
+    {
+        name: "s8 (example)",
+        label: "s8",
+        classes: ["s", "s-8"],
+        superlayer: null,
+    },
 ]
 
 export default META_LAYERS;
