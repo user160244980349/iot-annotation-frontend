@@ -19,6 +19,8 @@ TODO
 - [x] Bugs with selection of not the policy content
 - [x] More sensitive rerender of layers panel
 - [x] Fix empty spans
+- [x] Partial ontology
+- [ ] Add time, special audience
 - [ ] Review code (especially dynamics and callbacks)
 - [ ] Clean code
 - [ ] Lazy loading (webpack warnings)

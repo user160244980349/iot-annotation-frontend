@@ -16,6 +16,11 @@ export default class LayersManagement {
         
         this.icon_id = "pin_icon";
         this.icon = document.getElementById(this.icon_id);
+        let lock = document.createElement("div");
+        lock.classList.add("fa");
+        lock.classList.add("fa-lock");
+        lock.araHidden = true;
+        this.icon.appendChild(lock);
 
         this.activeElements = 0;
         this.pinned = 0;
@@ -37,12 +42,22 @@ export default class LayersManagement {
 
     unpin () {
         this.pinned = false;
-        this.icon.innerHTML = "<i class='fas fa-lock-open'></i>";
+        let open = document.createElement("div");
+        open.classList.add("fa");
+        open.classList.add("fa-lock-open");
+        open.araHidden = true;
+        this.icon.removeChild(this.icon.lastChild);
+        this.icon.appendChild(open);
     }
 
     pin () {
         this.pinned = true;
-        this.icon.innerHTML = "<i class='fas fa-lock'></i>";
+        let lock = document.createElement("div");
+        lock.classList.add("fa");
+        lock.classList.add("fa-lock");
+        lock.araHidden = true;
+        this.icon.removeChild(this.icon.lastChild);
+        this.icon.appendChild(lock);
     }
 
     render (mode, state, what) {
@@ -78,12 +93,17 @@ export default class LayersManagement {
         let newNode = document.createElement("li");
         newNode.classList.add("list-group-item");
         newNode.style.fontStyle = "italic";
-        newNode.innerHTML = "Nothing yet...";
+        newNode.innerHTML = "Nothing to show...";
         this.ul.appendChild(newNode);
         this.ul.appendChild(this.divider());
     }
 
     renderSuggestions (metaLayers) {
+        if (metaLayers.length === 0) {
+            this.renderEmpty();
+            return;
+        }
+
         this.ul.innerHTML = "";
         this.ul.appendChild(this.divider());
         for (let ml of metaLayers) {
@@ -105,80 +125,145 @@ export default class LayersManagement {
     }
 
     existingLayer (layer) {
-        
-        let container = document.createElement("li");
-        container.classList.add("list-group-item");
-        container.classList.add("p-1");
-        container.style.color = layer.color;
+
+        let item = document.createElement("li");
+        item.classList.add("list-group-item");
+        item.classList.add("p-0");
+        item.classList.add("m-0");
+        item.style.color = layer.color;
 
         let flex = document.createElement("div");
-        flex.classList.add("d-flex");
-        flex.innerHTML = `
-        <div class="col m-0">
-            <div class="row m-0" style="font-weight: bold;">${layer.name}</div>
-            <div class="row m-0">
-                <i>Layer id: ${layer.id}</i>
-            </div>
-        </div>
+        flex.classList.add("row");
+        flex.classList.add("d-inline-flex");
+        flex.classList.add("w-100");
+        flex.classList.add("p-2");
+        flex.classList.add("m-0");
+
+        let description = document.createElement("div");
+        description.classList.add("col");
+        description.classList.add("p-0");
+        description.classList.add("m-0");
+        description.style.minWidth = "90%";
+        description.innerHTML = `
+            <b>${layer.label}</b><br>
+            <i>Class: ${layer.subclassOf[0]}, id: ${layer.id}</i>
         `;
+
+        let control = document.createElement("div");
+        control.classList.add("col");
+        control.classList.add("p-0");
+        control.classList.add("m-0");
+        control.style.minWidth = "20px";
+
+        let times = document.createElement("div");
+        times.classList.add("fa");
+        times.classList.add("fa-times");
+        times.araHidden = true;
 
         let button = document.createElement("button");
         button.classList.add("btn");
         button.classList.add("btn-danger");
         button.classList.add("btn-sm");
-        button.classList.add("mr-3");
-        button.innerHTML = "<i class='fa fa-times' aria-hidden='true'></i>";
-        button.onclick = () => {
-            this.unpin();
-            this.removeLayer(layer.id);
-        }
-
-        flex.appendChild(button);
-        container.appendChild(flex);
-
-        return container;
-        
-    }
-
-    newLayer (layer) {
-
-        let container = document.createElement("li");
-        container.classList.add("list-group-item");
-        container.classList.add("p-1");
-        container.style.color = layer.color;
-
-        let flex = document.createElement("div");
-        flex.classList.add("d-flex");
-        flex.innerHTML = `
-        <div class="col m-0">
-            <div class="row m-0" style="font-weight: bold;">${layer.name}</div>
-        </div>
-        `;
-
-        let button = document.createElement("button");
-        button.classList.add("btn");
-        button.classList.add("btn-success");
-        button.classList.add("btn-sm");
-        button.classList.add("mr-3");
-        button.innerHTML = "<i class='fa fa-plus' aria-hidden='true'></i>";
+        button.classList.add("w-100");
+        button.classList.add("h-100");
+        button.classList.add("p-0");
+        button.classList.add("m-0");
         button.onclick = () => {
             this.unpin();
             this.applyLayer(layer);
         }
 
-        flex.appendChild(button);
-        container.appendChild(flex);
+        button.appendChild(times);
+        control.appendChild(button);
+
+        flex.appendChild(description);
+        flex.appendChild(control);
+        item.appendChild(flex);
         
-        return container;
+        return item;
+        
+    }
+
+    newLayer (layer) {
+
+        let item = document.createElement("li");
+        item.classList.add("list-group-item");
+        item.classList.add("p-0");
+        item.classList.add("m-0");
+        item.style.color = layer.color;
+
+        let flex = document.createElement("div");
+        flex.classList.add("row");
+        flex.classList.add("d-inline-flex");
+        flex.classList.add("w-100");
+        flex.classList.add("p-2");
+        flex.classList.add("m-0");
+
+        let description = document.createElement("div");
+        description.classList.add("col");
+        description.classList.add("p-0");
+        description.classList.add("m-0");
+        description.style.minWidth = "90%";
+        description.innerHTML = `
+            <b>${layer.label}</b><br>
+            <i>Class: ${layer.subclassOf[0]}</i>
+        `;
+
+        let control = document.createElement("div");
+        control.classList.add("col");
+        control.classList.add("p-0");
+        control.classList.add("m-0");
+        control.style.minWidth = "20px";
+
+        let plus = document.createElement("div");
+        plus.classList.add("fa");
+        plus.classList.add("fa-plus");
+        plus.araHidden = true;
+
+        let button = document.createElement("button");
+        button.classList.add("btn");
+        button.classList.add("btn-success");
+        button.classList.add("btn-sm");
+        button.classList.add("w-100");
+        button.classList.add("h-100");
+        button.classList.add("p-0");
+        button.classList.add("m-0");
+        button.onclick = () => {
+            this.unpin();
+            this.applyLayer(layer);
+        }
+
+        button.appendChild(plus);
+        control.appendChild(button);
+
+        flex.appendChild(description);
+        flex.appendChild(control);
+        item.appendChild(flex);
+        
+        return item;
     }
 
     divider () {
-        let newNode = document.createElement("li");
-        newNode.classList.add("list-group-item");
-        newNode.classList.add("d-flex");
-        newNode.classList.add("justify-content-center");
-        newNode.innerHTML = `<div class="divider"></div>`;
-        return newNode;
+
+        let item = document.createElement("li");
+        item.classList.add("list-group-item");
+        item.classList.add("p-0");
+        item.classList.add("m-0");
+
+        let flex = document.createElement("div");
+        flex.classList.add("row");
+        flex.classList.add("d-inline-flex");
+        flex.classList.add("w-100");
+        flex.classList.add("p-2");
+        flex.classList.add("m-0");
+
+        let divider = document.createElement("div");
+        divider.classList.add("divider");
+
+        flex.appendChild(divider);
+        item.appendChild(flex);
+
+        return item;
     }
 
 }

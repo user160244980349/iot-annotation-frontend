@@ -12,11 +12,13 @@ export default class Layer {
 
     get color () {return this.metaLayer.color;}
 
-    get name () {return this.metaLayer.name;}
-
     get label () {return this.metaLayer.label;}
 
-    get superlayer () {return this.metaLayer.superlayer;}
+    get class () {return this.metaLayer.class;}
+
+    get subclassOf () {return this.metaLayer.subclassOf;}
+
+    get attributeOf () {return this.metaLayer.attributeOf;}
 
     get element () {
         this.metaLayer.el.setAttribute("data-layers", this.id);

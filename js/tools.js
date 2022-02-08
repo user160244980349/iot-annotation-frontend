@@ -42,6 +42,11 @@ function equalArrays (a, b) {
 }
 
 
+function hasSame (array1, array2) {
+    return array1.some((element) => {return array2.includes(element)});
+}
+
+
 function throttle (callback, limit) {
     var waiting = false;                      // Initially, we're not waiting
     return function () {                      // We return a throttled function
@@ -63,6 +68,7 @@ const tools = {
     merge: mergeNodes,
     equals: equalArrays,
     throttle: throttle,
+    hasSame: hasSame,
  };
 
  export default tools; 

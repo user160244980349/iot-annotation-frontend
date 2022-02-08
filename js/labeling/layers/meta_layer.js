@@ -2,14 +2,15 @@
 
 export default class MetaLayer {
 
-    constructor (prototype) {
-        this.classes = prototype["classes"];
-        this.label = prototype["label"];
-        this.name = prototype["name"];
-        this.superlayer = prototype["superlayer"];
+    constructor (prototype, visuals) {
+        this.class = prototype["class"];
+        this.subclassOf = prototype["subclassOf"];
+        this.attributeOf = prototype["attributeOf"];
+        this.label = visuals["label"];
+        this.css_classes = visuals["css_classes"];
         
         this.el = document.createElement("span");
-        this.el.classList.add(...this.classes);
+        this.el.classList.add(...this.css_classes);
         
         this.el.hidden = true;
         document.body.appendChild(this.el);

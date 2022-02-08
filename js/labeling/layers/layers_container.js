@@ -5,7 +5,8 @@ export default class LayersContainer {
     constructor () {
         this.layers_pool = {};
         this.btn = document.getElementById("commit");
-        this.href = "/data-download";
+        this.json = document.getElementById("json_data");
+        this.form = document.getElementById("json_form");
 
         this.btn.addEventListener("click", (e) => {
             this.send();
@@ -25,8 +26,6 @@ export default class LayersContainer {
     }
 
     send () {
-        this.json = document.getElementById("json_data");
-        this.form = document.getElementById("json_form");
         this.json.value = JSON.stringify(this.layers_pool);
         this.form.submit();
     }

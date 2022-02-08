@@ -2,7 +2,8 @@ import AnnotationSurface from './annotation/annotation_surface';
 import LayersContainer from './layers/layers_container';
 import LayersManagement from './management/layers_management';
 import RenderMode from './management/render_mode';
-import META_LAYERS from '../config';
+import META_LAYERS from '../ontology';
+import VISUAL_LAYERS from '../visuals';
 
 
 function main () {
@@ -12,7 +13,7 @@ function main () {
         return;
     }
 
-    const as = new AnnotationSurface(META_LAYERS);
+    const as = new AnnotationSurface(META_LAYERS, VISUAL_LAYERS);
     const lm = new LayersManagement();
     const lc = new LayersContainer();
 

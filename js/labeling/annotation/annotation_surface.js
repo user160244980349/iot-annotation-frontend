@@ -6,11 +6,10 @@ import State from './state';
 
 export default class AnnotationSurface {
 
-    constructor (metaLayers) {
+    constructor (metaLayers, visualLayers) {
         this.id = "annotation_surface";
         this.el = document.getElementById(this.id);
-        this.layers = this.importMetaLayers(metaLayers);
-
+        this.layers = this.importMetaLayers(metaLayers, visualLayers);
         this.state = State.HOVERING;
         this.selection = null;
         this.contextElement = null;
@@ -103,10 +102,10 @@ export default class AnnotationSurface {
         throw "Not implemented!";
     }
 
-    importMetaLayers(metaLayers) {
+    importMetaLayers(metaLayers, visualLayers) {
         let layers = {};
         for (let ml of metaLayers) {
-            layers[ml.label] = new MetaLayer(ml);
+            layers[ml.class] = new MetaLayer(ml, visualLayers[ml.class]);
         }
         return layers;
     }
@@ -128,7 +127,7 @@ export default class AnnotationSurface {
         for (let el of els) {
             layers.push(...this.toRemove(el, l));
         }
-        return [... new Set(layers)];
+        return [...new Set(layers)];
     }
 
     toRemove (el, l) {
@@ -154,7 +153,7 @@ export default class AnnotationSurface {
 
                 for (let tid of seq) {
                     let t = this.getLayer(tid).metaLayer;
-                    if (item.label == t.superlayer) {
+                    if (t.attributeOf.includes(item.class)) {
                         nextLevel.push(tid);
                     }
                 }
@@ -438,22 +437,25 @@ export default class AnnotationSurface {
     validateHierarchy (appliedLayers, newlayer) {
 
         let ls = [];
-        for (let l of appliedLayers) {
-            ls.push(this.getLayer(l));
-        }
+        for (let l of appliedLayers) ls.push(this.getLayer(l));
 
-        for (let l of ls.reverse()) {
-            if (newlayer.label == l.label) {
-                return false;
+        if (newlayer.attributeOf.length === 0) {
+            for (let l of ls.reverse()) {
+                if (l.attributeOf.length === 0) {
+                    return false;
+                }
             }
-        }
-
-        if (newlayer.superlayer == null) {
             return true;
         }
 
         for (let l of ls.reverse()) {
-            if (newlayer.superlayer == l.label) {
+            if (tools.hasSame(newlayer.subclassOf, l.subclassOf)) {
+                return false;
+            }
+        }
+
+        for (let l of ls.reverse()) {
+            if (newlayer.attributeOf.includes(l.class)) {
                 return true;
             }
         }
@@ -522,7 +524,7 @@ export default class AnnotationSurface {
         let middle_el = middle.cloneContents();
         let end_el = end.cloneContents();
         
-        if (start_el.lastChild.nodeType == 1 && start_el.lastChild.innerText === '') {
+        if (start_el.lastChild.nodeType == 1 && start_el.lastChild.innerText === "") {
             start_el.lastChild.remove();
         }
         if (middle_el.firstChild.nodeType == 3 && middle_el.firstChild.length == 0) {
@@ -531,7 +533,7 @@ export default class AnnotationSurface {
         if (middle_el.lastChild.nodeType == 3 && middle_el.lastChild.length == 0) {
             middle_el.lastChild.remove();
         }
-        if (end_el.firstChild.nodeType == 1 && end_el.firstChild.innerText === '') {
+        if (end_el.firstChild.nodeType == 1 && end_el.firstChild.innerText === "") {
             end_el.firstChild.remove();
         }
 
