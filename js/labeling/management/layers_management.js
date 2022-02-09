@@ -170,7 +170,7 @@ export default class LayersManagement {
         button.classList.add("m-0");
         button.onclick = () => {
             this.unpin();
-            this.applyLayer(layer);
+            this.removeLayer(layer.id);
         }
 
         button.appendChild(times);
