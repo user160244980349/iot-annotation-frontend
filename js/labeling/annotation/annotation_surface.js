@@ -148,8 +148,18 @@ export default class AnnotationSurface {
 
                 let id = level.shift();
                 let seq = layers.slice(layers.indexOf(id));
+                let pre = layers.slice(0, layers.indexOf(id));
                 let item = this.getLayer(id).metaLayer;
-                toRemove.push(id);
+
+                let parent = 0;
+                for (let tid of pre) {
+                    let t = this.getLayer(tid).metaLayer;
+                    if (item.attributeOf.includes(t.class)) {
+                        parent++;
+                    }
+                }
+
+                if (parent < 2 || id == l) toRemove.push(id);
 
                 for (let tid of seq) {
                     let t = this.getLayer(tid).metaLayer;
@@ -439,21 +449,19 @@ export default class AnnotationSurface {
         let ls = [];
         for (let l of appliedLayers) ls.push(this.getLayer(l));
 
-        if (newlayer.attributeOf.length === 0) {
-            for (let l of ls.reverse()) {
-                if (l.attributeOf.length === 0) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
+        // Check if same class
         for (let l of ls.reverse()) {
-            if (tools.hasSame(newlayer.subclassOf, l.subclassOf)) {
+            if (newlayer.class == l.class) {
                 return false;
             }
         }
 
+        // Check if root layer
+        if (newlayer.attributeOf.length === 0) {
+            return true;
+        }
+
+        // Check if attribute of
         for (let l of ls.reverse()) {
             if (newlayer.attributeOf.includes(l.class)) {
                 return true;
@@ -524,16 +532,24 @@ export default class AnnotationSurface {
         let middle_el = middle.cloneContents();
         let end_el = end.cloneContents();
         
-        if (start_el.lastChild.nodeType == 1 && start_el.lastChild.innerText === "") {
+        while (start_el.lastChild.nodeType == 1 
+                && start_el.lastChild.innerText === "") {
             start_el.lastChild.remove();
         }
-        if (middle_el.firstChild.nodeType == 3 && middle_el.firstChild.length == 0) {
+        while ((middle_el.firstChild.nodeType == 1 
+                && middle_el.firstChild.innerText === "") 
+                || (middle_el.firstChild.nodeType == 3 
+                && middle_el.firstChild.length == 0)) {
             middle_el.firstChild.remove();
         }
-        if (middle_el.lastChild.nodeType == 3 && middle_el.lastChild.length == 0) {
+        while ((middle_el.lastChild.nodeType == 1 
+                && middle_el.lastChild.innerText === "") 
+                || (middle_el.lastChild.nodeType == 3 
+                && middle_el.lastChild.length == 0)) {
             middle_el.lastChild.remove();
         }
-        if (end_el.firstChild.nodeType == 1 && end_el.firstChild.innerText === "") {
+        while (end_el.firstChild.nodeType == 1 
+                && end_el.firstChild.innerText === "") {
             end_el.firstChild.remove();
         }
 
